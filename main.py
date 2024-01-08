@@ -1,44 +1,27 @@
-player = (2, 3)
-bullet = None
+player = 2
+player_y = 4
+bullet = (2, 3)
 
-def move_left():
-    led.unplot(player[0], player[1])
-    player[0] -= 1
-    if player[0] < 0:
-        player[0] = 0
-    led.plot(player[0], player[1])
-
-
-def shoot():
+### Moving the bullet
+def game_update():
     global bullet
-    if bullet == None:
-        bullet = [player[0], player[1] - 1]
-        led.plot(bullet[0], bullet[1])
 
-def move_right():
-    led.unplot(player[0], player[1])
-    player[0] += 1
-    if player[0] > 4:
-        player[0] = 4
-    led.plot(player[0], player[1])
+    if bullet != None:
+        led.unplot(bullet[0], bullet[1])
 
-input.on_button_pressed(Button.A, move_left)
-input.on_button_pressed(Button.B, move_right)
-input.on_button_pressed(Button.AB, shoot)
+        bullet[1] -= 1
 
+        if bullet[1] < 0:
+            bullet = None
+        else:
+            led.plot(bullet[0], bullet[1])
 
-# Plot initial player position
-led.plot(player[0], player[1])
+loops.every_interval(500, game_update)
 
-def on_forever():
+### Shooting
+def shoot_bullet():
     global bullet
-    if bullet == None:
-        return
-    led.unplot(bullet[0], bullet[1])
-    bullet[1] -= 1
-    if bullet[1] < 0:
-        bullet = None
-        return
-    led.plot(bullet[0], bullet[1])
+    bullet = (2, 3)
 
-loops.every_interval(500, on_forever)
+input.on_logo_event(TouchButtonEvent.PRESSED, shoot_bullet)
+input.on_button_pressed(Button.AB, shoot_bullet)
